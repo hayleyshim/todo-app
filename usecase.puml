@@ -1,0 +1,135 @@
+@startuml usecase
+' 할 일 관리 앱 — Use Case Diagram (MVP 중심)
+' 기준: 사용자스토리.md v1.0 / 요구사항정의서.md v2.0
+' 색: 초록=MVP, 회색=2차
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam ArrowColor #555555
+left to right direction
+
+skinparam actor {
+  BackgroundColor #F5F7FA
+  BorderColor #5B8DEF
+}
+skinparam usecase {
+  BorderColor #9AA3B2
+  FontColor #222633
+  BackgroundColor<<MVP>> #E7F6EC
+  BorderColor<<MVP>> #3FAE6A
+  BackgroundColor<<later>> #EEEEF2
+  BorderColor<<later>> #B6BAC4
+}
+
+' ===== Actors =====
+actor "사용자" as User
+actor "인증 제공자\n(Google)" as Auth
+actor "알림 스케줄러\n(시각 트리거)" as Scheduler
+actor "동기화 서버\n(Firebase)" as Sync
+
+rectangle "할 일 관리 앱" {
+
+  ' --- 계정 ---
+  package "계정" {
+    usecase "소셜 로그인" as UC_Login <<MVP>>
+    usecase "로그아웃" as UC_Logout <<MVP>>
+  }
+
+  ' --- 입력(빠른 캡처) ---
+  package "빠른 입력" {
+    usecase "할 일 빠르게 추가" as UC_Quick <<MVP>>
+    usecase "음성으로 추가" as UC_Voice <<later>>
+    usecase "자연어로 마감 인식" as UC_NLP <<later>>
+  }
+
+  ' --- 관리 ---
+  package "할 일 관리" {
+    usecase "할 일 상세 편집" as UC_Edit <<MVP>>
+    usecase "할 일 완료/취소" as UC_Done <<MVP>>
+    usecase "할 일 삭제" as UC_Delete <<MVP>>
+    usecase "우선순위 설정·정렬" as UC_Prio <<MVP>>
+  }
+
+  ' --- 마감/알림 (앱의 심장) ---
+  package "마감 · 알림" {
+    usecase "마감일 설정" as UC_Due <<MVP>>
+    usecase "알림 예약" as UC_Schedule <<MVP>>
+    usecase "푸시 알림 받기" as UC_Push <<MVP>>
+    usecase "알림에서 완료/미루기" as UC_NotifAct <<MVP>>
+    usecase "미완료 재알림" as UC_Renotif <<later>>
+    usecase "마감 전 미리 알림" as UC_Pre <<later>>
+  }
+
+  ' --- 반복 ---
+  package "반복 할 일" {
+    usecase "반복 주기 설정" as UC_Repeat <<MVP>>
+    usecase "다음 회차 자동 생성" as UC_NextGen <<MVP>>
+    usecase "반복 예외 처리" as UC_Except <<later>>
+  }
+
+  ' --- 조회 ---
+  package "목록 · 조회" {
+    usecase "할 일 목록 보기" as UC_List <<MVP>>
+    usecase "정렬/분리 표시" as UC_Sort <<MVP>>
+    usecase "달력으로 보기" as UC_Cal <<later>>
+  }
+
+  ' --- 동기화 ---
+  package "오프라인 · 동기화" {
+    usecase "오프라인으로 사용" as UC_Offline <<MVP>>
+    usecase "다중 기기 동기화" as UC_MultiSync <<later>>
+  }
+
+  ' --- 설정 ---
+  package "설정" {
+    usecase "알림 설정" as UC_Settings <<MVP>>
+  }
+}
+
+' ===== 사용자 연결 =====
+User --> UC_Login
+User --> UC_Logout
+User --> UC_Quick
+User --> UC_Edit
+User --> UC_Done
+User --> UC_Delete
+User --> UC_Prio
+User --> UC_Due
+User --> UC_NotifAct
+User --> UC_Repeat
+User --> UC_Except
+User --> UC_List
+User --> UC_Cal
+User --> UC_Settings
+User --> UC_Offline
+
+' ===== 보조 액터 연결 =====
+UC_Login ..> Auth
+Scheduler --> UC_Push
+UC_MultiSync ..> Sync
+UC_Offline ..> Sync : 복귀 시 동기화
+
+' ===== 관계 (include/extend) =====
+UC_Voice ..> UC_Quick : <<extend>>
+UC_NLP ..> UC_Quick : <<extend>>
+UC_Quick ..> UC_Prio : <<include>>\n(기본 보통)
+
+UC_Due ..> UC_Schedule : <<include>>
+UC_Repeat ..> UC_Schedule : <<include>>
+UC_Schedule ..> UC_Push : <<include>>
+UC_Pre ..> UC_Schedule : <<extend>>
+UC_Renotif ..> UC_Push : <<extend>>
+
+UC_Done ..> UC_NextGen : <<extend>>\n(반복일 때)
+UC_List ..> UC_Sort : <<include>>
+
+legend right
+  |= 색 |= 의미 |
+  |<#E7F6EC>| MVP (1차) |
+  |<#EEEEF2>| 2차 |
+  --
+  <<include>> 항상 포함 · <<extend>> 조건부 확장
+endlegend
+
+@enduml

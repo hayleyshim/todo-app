@@ -1,0 +1,17 @@
+# 의존성
+node_modules/
+
+# 빌드 산출물
+app/dist/
+
+# Playwright
+app/playwright-report/
+app/test-results/
+app/blob-report/
+app/playwright/.cache/
+
+# 로컬 환경
+.DS_Store
+*.log
+.env
+.env.local

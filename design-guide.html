@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>할 일 앱 — 디자인 가이드 (3개 안)</title>
+<style>
+  :root{
+    --ink:#1b1b1f; --sub:#6b6b76; --line:#e7e7ec; --bg:#f5f5f7;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;padding:32px 24px;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI",Roboto,"Apple SD Gothic Neo",sans-serif;}
+  h1{font-size:22px;margin:0 0 6px;}
+  .intro{color:var(--sub);font-size:13px;max-width:820px;line-height:1.7;margin-bottom:28px;}
+  .intro code{background:#e9e9ee;padding:1px 6px;border-radius:4px;font-size:12px;}
+
+  .grid{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;}
+  .concept{flex:1;min-width:330px;max-width:380px;background:#fff;border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;display:flex;flex-direction:column;}
+  .c-head{padding:18px 18px 14px;border-bottom:1px solid var(--line);}
+  .c-name{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .c-tag{font-size:12px;color:var(--sub);margin-top:4px;line-height:1.5;}
+  .c-value{display:inline-block;margin-top:10px;font-size:11px;font-weight:600;
+    padding:3px 9px;border-radius:20px;}
+
+  .sec{padding:14px 18px;border-bottom:1px solid var(--line);}
+  .sec h4{margin:0 0 10px;font-size:11px;letter-spacing:.04em;color:var(--sub);
+    text-transform:uppercase;font-weight:700;}
+
+  /* 팔레트 */
+  .swatches{display:flex;gap:8px;flex-wrap:wrap;}
+  .sw{width:54px;}
+  .sw .chip{height:38px;border-radius:8px;border:1px solid rgba(0,0,0,.06);}
+  .sw .hex{font-size:9px;color:var(--sub);margin-top:4px;text-align:center;}
+  .sw .role{font-size:9px;color:var(--ink);text-align:center;font-weight:600;}
+
+  /* 타이포 */
+  .type-row{display:flex;align-items:baseline;gap:10px;margin:5px 0;}
+  .type-row .lbl{font-size:10px;color:var(--sub);width:54px;flex:0 0 auto;}
+
+  /* 우선순위 표현 */
+  .pri-demo{display:flex;gap:8px;flex-wrap:wrap;}
+  .pri-demo .item{font-size:11px;display:flex;align-items:center;gap:5px;}
+
+  /* ── 폰 목업 ── */
+  .phone-wrap{padding:18px;background:#ececed;}
+  .phone{margin:0 auto;width:280px;border-radius:26px;overflow:hidden;
+    box-shadow:0 8px 30px rgba(0,0,0,.14);}
+  .screen{display:flex;flex-direction:column;height:480px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;}
+  .list{flex:1;overflow:hidden;}
+  .li{display:flex;align-items:center;gap:11px;}
+  .chk{flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+  .li .t{flex:1;}
+  .li .m{font-size:11px;}
+  .done .t{text-decoration:line-through;opacity:.45;}
+  .quick{display:flex;align-items:center;gap:9px;}
+  .quick .qi{flex:1;}
+  .fab{flex:0 0 auto;}
+
+  .note{font-size:11px;color:var(--sub);padding:12px 18px;line-height:1.6;}
+  .pick{margin-top:30px;font-size:13px;color:var(--sub);background:#fff;border:1px solid var(--line);
+    border-radius:10px;padding:14px 18px;max-width:820px;line-height:1.7;}
+
+  /* ===================== 안 A · 차분한 미니멀 ===================== */
+  .A{ --a-accent:#5b8def; --a-ink:#222633; --a-sub:#8a8f9c; --a-bg:#fbfbfd;
+      --a-card:#ffffff; --a-line:#edeef2; }
+  .A .c-value{background:#eaf1ff;color:#3a6fd6;}
+  .A .phone{background:var(--a-bg);font-family:-apple-system,"Segoe UI",sans-serif;}
+  .A .screen{background:var(--a-bg);color:var(--a-ink);}
+  .A .topbar{padding:20px 18px 12px;}
+  .A .topbar .h{font-size:20px;font-weight:700;letter-spacing:-.01em;}
+  .A .topbar .gear{color:var(--a-sub);font-size:16px;}
+  .A .li{padding:14px 18px;border-bottom:1px solid var(--a-line);}
+  .A .chk{width:20px;height:20px;border:1.6px solid #cfd3dc;border-radius:7px;}
+  .A .li .t{font-size:14px;font-weight:500;}
+  .A .li .m{color:var(--a-sub);}
+  .A .pri-dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;}
+  .A .quick{margin:12px 16px 18px;background:#fff;border:1px solid var(--a-line);
+    border-radius:14px;padding:11px 14px;box-shadow:0 2px 10px rgba(40,60,120,.05);}
+  .A .qi{color:#b3b7c2;font-size:13px;}
+  .A .fab{width:30px;height:30px;border-radius:50%;background:var(--a-accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:18px;}
+
+  /* ===================== 안 B · 따뜻한 프렌들리 ===================== */
+  .B{ --b-accent:#f0883e; --b-accent2:#e8694a; --b-ink:#43342a; --b-sub:#a08a7c;
+      --b-bg:#fdf6ee; --b-card:#fffaf4; --b-line:#f0e3d6; }
+  .B .c-value{background:#fdecd9;color:#cf6b22;}
+  .B .phone{background:var(--b-bg);}
+  .B .screen{background:var(--b-bg);color:var(--b-ink);}
+  .B .topbar{padding:20px 18px 10px;}
+  .B .topbar .h{font-size:21px;font-weight:800;}
+  .B .topbar .gear{color:var(--b-sub);}
+  .B .li{margin:9px 14px;padding:13px 15px;background:var(--b-card);
+    border:1px solid var(--b-line);border-radius:16px;
+    box-shadow:0 2px 8px rgba(180,120,60,.06);}
+  .B .chk{width:22px;height:22px;border:2px solid #e3c9ac;border-radius:50%;}
+  .B .li .t{font-size:14px;font-weight:600;}
+  .B .li .m{color:var(--b-sub);}
+  .B .pri-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+  .B .quick{margin:10px 14px 18px;background:#fff;border:2px solid #f3ddc6;
+    border-radius:22px;padding:11px 8px 11px 16px;}
+  .B .qi{color:#c5ac96;font-size:13px;}
+  .B .fab{width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(135deg,var(--b-accent),var(--b-accent2));color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:20px;}
+
+  /* ===================== 안 C · 선명한 포커스 (다크) ===================== */
+  .C{ --c-accent:#3ddc97; --c-ink:#f2f4f7; --c-sub:#8b93a2;
+      --c-bg:#15171c; --c-card:#1e2128; --c-line:#2a2e37; }
+  .C .c-value{background:#10342a;color:#3ddc97;}
+  .C .phone{background:var(--c-bg);}
+  .C .screen{background:var(--c-bg);color:var(--c-ink);}
+  .C .topbar{padding:20px 18px 12px;}
+  .C .topbar .h{font-size:20px;font-weight:800;letter-spacing:-.01em;}
+  .C .topbar .gear{color:var(--c-sub);}
+  .C .li{padding:14px 18px;border-bottom:1px solid var(--c-line);position:relative;}
+  .C .chk{width:20px;height:20px;border:2px solid #3c4250;border-radius:6px;}
+  .C .li .t{font-size:14px;font-weight:600;}
+  .C .li .m{color:var(--c-sub);}
+  .C .pri-bar{position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;}
+  .C .quick{margin:12px 16px 18px;background:var(--c-card);border:1px solid var(--c-line);
+    border-radius:12px;padding:12px 14px;}
+  .C .qi{color:#5f6675;font-size:13px;}
+  .C .fab{width:30px;height:30px;border-radius:9px;background:var(--c-accent);color:#08231a;
+    display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;}
+  .C .overdue{color:#ff6b6b;font-weight:700;}
+</style>
+</head>
+<body>
+
+<h1>할 일 앱 — 디자인 가이드 (3개 안)</h1>
+<p class="intro">
+  같은 홈 화면에 세 가지 디자인 방향을 적용했습니다. 각 안은 핵심가치
+  <code>①놓치지 않게</code> <code>②빠른 입력</code> <code>③안심</code> 중 어디에 무게를 두는지가 다릅니다.
+  공통 규칙: 우선순위는 색으로 구분, 빠른추가 바는 하단 고정, 마감 지남은 강조.
+</p>
+
+<div class="grid">
+
+  <!-- ====== 안 A ====== -->
+  <div class="concept A">
+    <div class="c-head">
+      <div class="c-name">🌫️ 안 A · 차분한 미니멀</div>
+      <div class="c-tag">여백과 무채색 중심. 군더더기 없이 조용하게. "할 일이 짐이 아니라 가벼운 메모처럼."</div>
+      <span class="c-value">무게중심 ③ 안심</span>
+    </div>
+
+    <div class="sec">
+      <h4>컬러 팔레트</h4>
+      <div class="swatches">
+        <div class="sw"><div class="chip" style="background:#5b8def"></div><div class="role">Accent</div><div class="hex">#5B8DEF</div></div>
+        <div class="sw"><div class="chip" style="background:#222633"></div><div class="role">Ink</div><div class="hex">#222633</div></div>
+        <div class="sw"><div class="chip" style="background:#8a8f9c"></div><div class="role">Sub</div><div class="hex">#8A8F9C</div></div>
+        <div class="sw"><div class="chip" style="background:#fbfbfd;border:1px solid #e7e7ec"></div><div class="role">BG</div><div class="hex">#FBFBFD</div></div>
+        <div class="sw"><div class="chip" style="background:#edeef2"></div><div class="role">Line</div><div class="hex">#EDEEF2</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h4>타이포 · 우선순위</h4>
+      <div class="type-row"><span class="lbl">제목</span><span style="font-size:18px;font-weight:700;">오늘 할 일</span></div>
+      <div class="type-row"><span class="lbl">본문</span><span style="font-size:14px;font-weight:500;">약 먹기</span></div>
+      <div class="type-row"><span class="lbl">메타</span><span style="font-size:11px;color:#8a8f9c;">오후 9:00</span></div>
+      <div class="pri-demo" style="margin-top:10px;">
+        <span class="item"><span style="width:7px;height:7px;border-radius:50%;background:#ef5b5b;display:inline-block;"></span>높음</span>
+        <span class="item"><span style="width:7px;height:7px;border-radius:50%;background:#f0a23e;display:inline-block;"></span>보통</span>
+        <span class="item"><span style="width:7px;height:7px;border-radius:50%;background:#c2c6d0;display:inline-block;"></span>낮음</span>
+      </div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen">
+        <div class="topbar"><span class="h">오늘</span><span class="gear">⚙</span></div>
+        <div class="list">
+          <div class="li"><span class="chk"></span><span class="t">약 먹기</span><span class="pri-dot" style="background:#ef5b5b"></span><span class="m">9:00</span></div>
+          <div class="li"><span class="chk"></span><span class="t">분리수거 내놓기</span><span class="pri-dot" style="background:#f0a23e"></span><span class="m">🔁 화</span></div>
+          <div class="li"><span class="chk"></span><span class="t">우산 챙기기</span><span class="pri-dot" style="background:#c2c6d0"></span><span class="m"></span></div>
+          <div class="li done"><span class="chk" style="background:#5b8def;border-color:#5b8def;color:#fff">✓</span><span class="t">메일 답장</span><span class="m"></span></div>
+        </div>
+        <div class="quick"><span class="qi">할 일 추가...</span><span class="fab">+</span></div>
+      </div></div>
+    </div>
+    <div class="note"><b>강점</b> 시각 소음이 적어 오래 봐도 피로하지 않음 · 빠른 입력에 집중<br>
+      <b>주의</b> 자칫 밋밋·무성의해 보일 수 있음. 빈 상태 카피로 온기 보완 필요.</div>
+  </div>
+
+  <!-- ====== 안 B ====== -->
+  <div class="concept B">
+    <div class="c-head">
+      <div class="c-name">🍑 안 B · 따뜻한 프렌들리</div>
+      <div class="c-tag">크림·살구톤에 둥근 카드. 부드럽고 친근하게. "적는 게 일처럼 느껴지지 않게."</div>
+      <span class="c-value">무게중심 ② 빠른 입력 (관둠 방지)</span>
+    </div>
+
+    <div class="sec">
+      <h4>컬러 팔레트</h4>
+      <div class="swatches">
+        <div class="sw"><div class="chip" style="background:#f0883e"></div><div class="role">Accent</div><div class="hex">#F0883E</div></div>
+        <div class="sw"><div class="chip" style="background:#e8694a"></div><div class="role">Accent2</div><div class="hex">#E8694A</div></div>
+        <div class="sw"><div class="chip" style="background:#43342a"></div><div class="role">Ink</div><div class="hex">#43342A</div></div>
+        <div class="sw"><div class="chip" style="background:#fdf6ee;border:1px solid #f0e3d6"></div><div class="role">BG</div><div class="hex">#FDF6EE</div></div>
+        <div class="sw"><div class="chip" style="background:#f0e3d6"></div><div class="role">Line</div><div class="hex">#F0E3D6</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h4>타이포 · 우선순위</h4>
+      <div class="type-row"><span class="lbl">제목</span><span style="font-size:19px;font-weight:800;">오늘 할 일</span></div>
+      <div class="type-row"><span class="lbl">본문</span><span style="font-size:14px;font-weight:600;">약 먹기</span></div>
+      <div class="type-row"><span class="lbl">메타</span><span style="font-size:11px;color:#a08a7c;">오후 9:00</span></div>
+      <div class="pri-demo" style="margin-top:10px;">
+        <span class="pri-pill" style="background:#fde2dc;color:#d4503a;">높음</span>
+        <span class="pri-pill" style="background:#fcecd5;color:#cf852a;">보통</span>
+        <span class="pri-pill" style="background:#eee7df;color:#9a8676;">낮음</span>
+      </div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen">
+        <div class="topbar"><span class="h">오늘 ☀️</span><span class="gear">⚙</span></div>
+        <div class="list">
+          <div class="li"><span class="chk"></span><span class="t">약 먹기</span><span class="pri-pill" style="background:#fde2dc;color:#d4503a;">높음</span><span class="m">9:00</span></div>
+          <div class="li"><span class="chk"></span><span class="t">분리수거 내놓기</span><span class="pri-pill" style="background:#fcecd5;color:#cf852a;">🔁화</span></div>
+          <div class="li"><span class="chk"></span><span class="t">우산 챙기기</span><span class="pri-pill" style="background:#eee7df;color:#9a8676;">낮음</span></div>
+        </div>
+        <div class="quick"><span class="qi">할 일 적어볼까요?</span><span class="fab">+</span></div>
+      </div></div>
+    </div>
+    <div class="note"><b>강점</b> 부드러운 인상으로 "관리 앱 거부감"을 낮춤 · 친근한 카피와 잘 맞음<br>
+      <b>주의</b> 카드·여백이 커서 한 화면 정보량 감소. 다크모드 색 설계 추가 필요.</div>
+  </div>
+
+  <!-- ====== 안 C ====== -->
+  <div class="concept C">
+    <div class="c-head">
+      <div class="c-name">🌑 안 C · 선명한 포커스 (다크)</div>
+      <div class="c-tag">어두운 배경에 또렷한 강조. 우선순위·마감이 눈에 꽂히게. "절대 놓치지 않게."</div>
+      <span class="c-value">무게중심 ① 놓치지 않게</span>
+    </div>
+
+    <div class="sec">
+      <h4>컬러 팔레트</h4>
+      <div class="swatches">
+        <div class="sw"><div class="chip" style="background:#3ddc97"></div><div class="role">Accent</div><div class="hex">#3DDC97</div></div>
+        <div class="sw"><div class="chip" style="background:#15171c"></div><div class="role">BG</div><div class="hex">#15171C</div></div>
+        <div class="sw"><div class="chip" style="background:#1e2128"></div><div class="role">Card</div><div class="hex">#1E2128</div></div>
+        <div class="sw"><div class="chip" style="background:#f2f4f7"></div><div class="role">Ink</div><div class="hex">#F2F4F7</div></div>
+        <div class="sw"><div class="chip" style="background:#ff6b6b"></div><div class="role">Alert</div><div class="hex">#FF6B6B</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h4>타이포 · 우선순위</h4>
+      <div class="type-row"><span class="lbl">제목</span><span style="font-size:18px;font-weight:800;">오늘 할 일</span></div>
+      <div class="type-row"><span class="lbl">본문</span><span style="font-size:14px;font-weight:600;">약 먹기</span></div>
+      <div class="type-row"><span class="lbl">메타</span><span style="font-size:11px;color:#8b93a2;">오후 9:00</span></div>
+      <div class="pri-demo" style="margin-top:10px;">
+        <span class="item"><span style="width:3px;height:14px;border-radius:3px;background:#ff6b6b;display:inline-block;"></span>높음</span>
+        <span class="item"><span style="width:3px;height:14px;border-radius:3px;background:#ffc14d;display:inline-block;"></span>보통</span>
+        <span class="item"><span style="width:3px;height:14px;border-radius:3px;background:#4a5160;display:inline-block;"></span>낮음</span>
+      </div>
+    </div>
+
+    <div class="phone-wrap" style="background:#0d0e12;">
+      <div class="phone"><div class="screen">
+        <div class="topbar"><span class="h">오늘</span><span class="gear">⚙</span></div>
+        <div class="list">
+          <div class="li"><span class="pri-bar" style="background:#ff6b6b"></span><span class="chk"></span><span class="t">약 먹기</span><span class="m">9:00</span></div>
+          <div class="li"><span class="pri-bar" style="background:#ffc14d"></span><span class="chk"></span><span class="t">분리수거 내놓기</span><span class="m">🔁 화</span></div>
+          <div class="li"><span class="pri-bar" style="background:#4a5160"></span><span class="chk"></span><span class="t">우산 챙기기</span><span class="m"></span></div>
+          <div class="li"><span class="pri-bar" style="background:#ff6b6b"></span><span class="chk"></span><span class="t overdue">병원 예약 ⚠</span><span class="m overdue">어제</span></div>
+        </div>
+        <div class="quick"><span class="qi">할 일 추가...</span><span class="fab">+</span></div>
+      </div></div>
+    </div>
+    <div class="note"><b>강점</b> 강한 대비로 중요한 일·마감 지남이 즉시 보임 · 야간/알림 맥락과 잘 맞음<br>
+      <b>주의</b> 다크가 기본이라 호불호. 라이트 모드 병행 설계 권장.</div>
+  </div>
+
+</div>
+
+<div class="pick">
+  <b>고르는 기준</b> — 우리 페르소나는 "적는 게 일이 돼서" 앱을 관둔 사람이고, 잃는 것은 돈이 아니라
+  <b>마음의 짐(스트레스)</b>입니다.<br>
+  · 거부감 없이 계속 쓰게 하는 게 최우선이면 → <b>안 B(따뜻한 프렌들리)</b><br>
+  · 조용하고 가벼운 도구를 원하면 → <b>안 A(차분한 미니멀)</b><br>
+  · "절대 안 놓치는" 강한 인상이 핵심이면 → <b>안 C(선명한 포커스)</b><br>
+  세 안은 배타적이지 않습니다. 예: <b>A의 미니멀 레이아웃 + B의 따뜻한 색</b> 같은 조합도 가능.
+</div>
+
+</body>
+</html>

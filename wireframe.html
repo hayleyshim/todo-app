@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>할 일 앱 — UX 와이어프레임 (키스크린)</title>
+<style>
+  /* 의도적으로 무채색·무장식: 디자인이 아닌 UX/구조만 표현 */
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", sans-serif;
+    background: #f4f4f4; color: #222; margin: 0; padding: 24px;
+  }
+  h1 { font-size: 18px; font-weight: 600; }
+  .lead { color: #666; font-size: 13px; max-width: 760px; line-height: 1.6; }
+  .legend { font-size: 12px; color: #555; margin: 8px 0 24px; }
+  .legend code { background:#e6e6e6; padding:1px 5px; border-radius:3px; }
+
+  .canvas { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
+
+  /* 폰 프레임: 디자인 아닌 영역 경계만 */
+  .phone {
+    width: 300px; background: #fff; border: 1px solid #bbb; border-radius: 6px;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .phone .scr-title {
+    background:#eee; border-bottom:1px solid #ccc; font-size:12px;
+    font-weight:600; padding:6px 10px; color:#333;
+  }
+  .screen { display:flex; flex-direction:column; min-height: 520px; }
+
+  /* 영역 박스 = 와이어프레임 회색 박스 */
+  .bar { border-bottom:1px dashed #bbb; padding:10px; display:flex;
+         justify-content:space-between; align-items:center; font-size:13px; }
+  .body { flex:1; padding:0; display:flex; flex-direction:column; }
+  .row {
+    display:flex; align-items:center; gap:8px; padding:11px 10px;
+    border-bottom:1px solid #eee; font-size:13px;
+  }
+  .chk { width:18px; height:18px; border:1px solid #999; border-radius:3px;
+         flex:0 0 auto; }
+  .chk.done { background:#ccc; }
+  .ttl { flex:1; }
+  .ttl.done { text-decoration: line-through; color:#999; }
+  .meta { font-size:11px; color:#777; white-space:nowrap; }
+  /* 우선순위는 '색'이 아니라 라벨로 (디자인 배제) */
+  .pri { font-size:10px; border:1px solid #999; border-radius:8px;
+         padding:0 5px; color:#555; }
+  .overdue { color:#000; font-weight:600; }   /* 색 대신 굵기로 강조 */
+
+  .section-h { padding:8px 10px; font-size:12px; color:#777;
+               border-top:1px solid #ddd; border-bottom:1px solid #eee;
+               display:flex; justify-content:space-between; }
+  .spacer { flex:1; }
+
+  /* 하단 고정 빠른추가 바 */
+  .quickadd {
+    border-top:1px solid #bbb; padding:10px; display:flex; gap:8px;
+    align-items:center; background:#fafafa;
+  }
+  .quickadd .input {
+    flex:1; border:1px solid #aaa; border-radius:16px; padding:7px 12px;
+    font-size:12px; color:#999; background:#fff;
+  }
+  .iconbtn { width:30px; height:30px; border:1px solid #aaa; border-radius:50%;
+             font-size:12px; display:flex; align-items:center; justify-content:center;
+             flex:0 0 auto; color:#555; }
+
+  .empty { flex:1; display:flex; flex-direction:column; align-items:center;
+           justify-content:center; color:#999; font-size:12px; gap:6px;
+           text-align:center; padding:20px; }
+
+  /* 필드(편집 시트) */
+  .field { display:flex; align-items:center; gap:10px; padding:11px 12px;
+           border-bottom:1px solid #eee; font-size:13px; }
+  .field .label { width:74px; color:#666; font-size:12px; }
+  .field .val { flex:1; border:1px solid #bbb; border-radius:4px;
+                padding:6px 8px; font-size:12px; color:#444; background:#fafafa; }
+  .handle { width:36px; height:4px; background:#ccc; border-radius:2px;
+            margin:8px auto; }
+  .btn { margin:12px 10px; border:1px solid #888; border-radius:5px;
+         text-align:center; padding:10px; font-size:13px; color:#333; background:#f0f0f0; }
+  .btn.disabled { color:#bbb; border-color:#ddd; }
+  .more { padding:11px 12px; font-size:12px; color:#888; border-bottom:1px solid #eee; }
+
+  /* 알림 */
+  .notif { width:300px; border:1px solid #bbb; border-radius:8px; background:#fff;
+           padding:12px; font-size:13px; }
+  .notif .nhead { font-size:11px; color:#888; display:flex; justify-content:space-between; }
+  .notif .nbody { margin:6px 0 10px; font-weight:600; }
+  .notif .nactions { display:flex; gap:8px; }
+  .notif .naction { flex:1; border:1px solid #999; border-radius:5px; text-align:center;
+                    padding:7px; font-size:12px; color:#444; }
+
+  /* UX 주석 */
+  .note {
+    font-size:11px; color:#1a5; background:#eefcf3; border:1px solid #b9e6cd;
+    border-radius:4px; padding:6px 8px; margin:8px 0 0; line-height:1.5;
+  }
+  .note b { color:#093; }
+  .scr-wrap { width:300px; }
+  .scr-id { font-size:11px; color:#999; margin:6px 2px 2px; }
+  .banner { font-size:11px; background:#f3f3f3; border-bottom:1px solid #ddd;
+            color:#666; padding:5px 10px; text-align:center; }
+</style>
+</head>
+<body>
+
+<h1>할 일 앱 — UX 와이어프레임 (키스크린)</h1>
+<p class="lead">
+  디자인(색·타이포·브랜딩)은 의도적으로 배제하고, <b>UX 구조·구성요소·상호작용</b>만 표현합니다.
+  우선순위는 색 대신 <code>높음/보통/낮음</code> 라벨로, 강조는 색 대신 굵기로 나타냅니다.
+  초록 박스는 핵심가치를 실현하는 <b>UX 주석</b>입니다.
+</p>
+<p class="legend">
+  핵심가치 — <code>①놓치지 않게</code> <code>②빠른 입력</code> <code>③안심</code>
+  · 기준: 사용자스토리.md · 화면구성설계.md
+</p>
+
+<div class="canvas">
+
+  <!-- S1 로그인 -->
+  <div class="scr-wrap">
+    <div class="scr-id">S1 · US-1.1</div>
+    <div class="phone">
+      <div class="scr-title">로그인</div>
+      <div class="screen">
+        <div class="empty" style="justify-content:center;">
+          <div style="font-size:28px;">▢</div>
+          <div style="font-weight:600;color:#444;">할 일, 놓치지 않게.</div>
+          <div style="height:40px;"></div>
+          <div class="btn" style="width:200px;">G  Google로 계속하기</div>
+          <div style="font-size:10px;color:#aaa;">로그인 시 약관·개인정보 동의</div>
+        </div>
+      </div>
+    </div>
+    <div class="note">가입 단계 없음 → 첫 진입 마찰 최소화. 단일 CTA만 노출.</div>
+  </div>
+
+  <!-- S2 홈 -->
+  <div class="scr-wrap">
+    <div class="scr-id">S2 · US-6.1/6.2/2.1/3.2/3.4 ⭐</div>
+    <div class="phone">
+      <div class="scr-title">홈 — 할 일 목록</div>
+      <div class="screen">
+        <div class="bar"><b>오늘</b><span>⚙</span></div>
+        <div class="banner">오프라인 — 변경은 자동 동기화됩니다</div>
+        <div class="body">
+          <div class="row">
+            <div class="chk"></div><div class="ttl">약 먹기</div>
+            <span class="pri">높음</span><span class="meta">21:00</span>
+          </div>
+          <div class="row">
+            <div class="chk"></div><div class="ttl">분리수거 내놓기</div>
+            <span class="pri">보통</span><span class="meta">🔁 매주 화</span>
+          </div>
+          <div class="row">
+            <div class="chk"></div><div class="ttl">우산 챙기기</div>
+            <span class="pri">낮음</span><span class="meta"></span>
+          </div>
+          <div class="row">
+            <div class="chk"></div><div class="ttl overdue">병원 예약 확인 ⚠</div>
+            <span class="pri">높음</span><span class="meta overdue">어제</span>
+          </div>
+          <div class="section-h"><span>✓ 완료됨 (2)</span><span>▾</span></div>
+          <div class="spacer"></div>
+        </div>
+        <div class="quickadd">
+          <div class="input">＋ 할 일 추가...</div>
+          <div class="iconbtn">🎤</div>
+        </div>
+      </div>
+    </div>
+    <div class="note"><b>②</b> 빠른추가 바는 항상 고정 — 제목만 치고 엔터 시 화면 이동 없이 즉시 등록(3초).<br>
+      <b>①</b> 우선순위 라벨 + 마감/반복 메타를 한 줄에. 마감 지남은 굵게 강조.<br>
+      탭=편집 / 스와이프=삭제(Undo) / 체크=완료(Undo).</div>
+  </div>
+
+  <!-- S2 빈 상태 -->
+  <div class="scr-wrap">
+    <div class="scr-id">S2 (빈 상태) · US-6.1</div>
+    <div class="phone">
+      <div class="scr-title">홈 — 첫 사용</div>
+      <div class="screen">
+        <div class="bar"><b>오늘</b><span>⚙</span></div>
+        <div class="empty">
+          <div style="font-size:24px;">▢</div>
+          오늘은 비어 있어요.<br>아래에 첫 할 일을 적어보세요.
+        </div>
+        <div class="quickadd">
+          <div class="input" style="border-color:#666;color:#444;">＋ 할 일 추가...</div>
+          <div class="iconbtn">🎤</div>
+        </div>
+      </div>
+    </div>
+    <div class="note"><b>③</b> 빈 화면도 "기록하면 비워진다"는 행동을 유도 — 입력 바를 강조.</div>
+  </div>
+
+  <!-- S3 편집 시트 -->
+  <div class="scr-wrap">
+    <div class="scr-id">S3 · US-2.1/3.1/4.1/5.1/3.4</div>
+    <div class="phone">
+      <div class="scr-title">추가·편집 (바텀시트)</div>
+      <div class="screen">
+        <div style="opacity:.35; flex:1; padding:10px; font-size:12px; color:#999;">
+          (홈 화면이 뒤에 흐릿하게)
+        </div>
+        <div style="border-top:1px solid #bbb; background:#fff;">
+          <div class="handle"></div>
+          <div class="field"><span class="label">제목</span>
+            <span class="val" style="color:#222;">약 먹기</span></div>
+          <div class="field"><span class="label">📅 마감</span>
+            <span class="val">오늘 21:00　✕</span></div>
+          <div class="field"><span class="label">🔁 반복</span>
+            <span class="val">안 함 ▾</span></div>
+          <div class="field"><span class="label">🚩 우선순위</span>
+            <span class="val">보통 ▾</span></div>
+          <div class="more">＋ 더보기 (메모)</div>
+          <div class="btn">저장</div>
+        </div>
+      </div>
+    </div>
+    <div class="note"><b>②</b> 점진적 공개: 핵심 4줄만, 나머지는 "더보기". 제목 외 전부 선택.<br>
+      마감 설정 시 "알림 보내기" 기본 ON 제안 → <b>①</b>로 연결. 우선순위 기본 "보통".</div>
+  </div>
+
+  <!-- N1 알림 -->
+  <div class="scr-wrap">
+    <div class="scr-id">N1 · US-4.2/4.3 ⭐ (화면 밖)</div>
+    <div style="height:26px;"></div>
+    <div class="notif">
+      <div class="nhead"><span>📌 할 일 관리</span><span>지금</span></div>
+      <div class="nbody">약 먹기 — 지금이에요</div>
+      <div class="nactions">
+        <div class="naction">✓ 완료</div>
+        <div class="naction">😴 미루기</div>
+      </div>
+    </div>
+    <div class="note"><b>①</b> 앱이 꺼져 있어도 도착하는 <b>핵심 경험</b>.<br>
+      알림 안에서 바로 완료/미루기 → 앱을 안 열어도 처리.<br>
+      미완료 방치 시 재알림(US-4.4)으로 끝내 놓치지 않음.</div>
+  </div>
+
+  <!-- S4 설정 -->
+  <div class="scr-wrap">
+    <div class="scr-id">S4 · US-8.1/1.2</div>
+    <div class="phone">
+      <div class="scr-title">설정</div>
+      <div class="screen">
+        <div class="bar"><span>←　설정</span><span></span></div>
+        <div class="body" style="font-size:13px;">
+          <div class="section-h" style="border-top:none;"><span>알림</span></div>
+          <div class="row"><div class="ttl">전체 알림</div><span class="meta">[ ● ]</span></div>
+          <div class="row"><div class="ttl">기본 알림 시각</div><span class="meta">오전 9시</span></div>
+          <div class="row"><div class="ttl">미루기 간격</div><span class="meta">30분</span></div>
+          <div class="row"><div class="ttl">미리 알림</div><span class="meta">끄기 ▾</span></div>
+          <div class="section-h"><span>계정</span></div>
+          <div class="row"><div class="ttl">yhshim17@gmail.com</div></div>
+          <div class="row"><div class="ttl">로그아웃</div></div>
+          <div class="section-h"><span>정보</span></div>
+          <div class="row"><div class="ttl">버전</div><span class="meta">1.0</span></div>
+          <div class="spacer"></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">알림 권한 없으면 상단에 "알림 권한 필요" 배너 + 요청. 미루기 간격은 N1과 연동.</div>
+  </div>
+
+</div>
+
+<p class="legend" style="margin-top:28px;">
+  ※ 이 문서는 UX 검증용 저충실도(low-fidelity) 와이어프레임입니다.
+  색·간격·타이포 등 시각 디자인은 다음 단계(목업/Figma)에서 정의합니다.
+</p>
+
+</body>
+</html>
