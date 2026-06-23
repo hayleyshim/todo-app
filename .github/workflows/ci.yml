@@ -26,7 +26,10 @@ jobs:
           cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        # npm ci(엄격 일치) 대신 npm install 사용:
+        # @emnapi 등 플랫폼별 optional 의존성은 macOS에서 만든 lock에
+        # Linux용 항목이 빠질 수 있어 npm ci가 실패함. install은 자동 보완.
+        run: npm install --no-fund --no-audit
 
       - name: Build
         run: npm run build
